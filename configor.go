@@ -85,7 +85,8 @@ func (configor *Configor) GetErrorOnUnmatchedKeys() bool {
 
 // Load will unmarshal configurations to struct from files that you provide
 func (configor *Configor) Load(config interface{}, files ...string) (err error) {
-	defaultValue := reflect.Indirect(reflect.ValueOf(config))
+	defaultValue := reflect.New(reflect.ValueOf(config).Elem().Type()).Elem()
+	defaultValue.Set(reflect.Indirect(reflect.ValueOf(config)))
 	if !defaultValue.CanAddr() {
 		return fmt.Errorf("Config %v should be addressable", config)
 	}
